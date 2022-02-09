@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+option csharp_namespace = "Municorn.Notification";
+
+package notification;
+
+// Notifications service.
+service Notifications {
+  // Sends notification.
+  rpc SendNotification (SendNotificationRequest) returns (SendNotificationResponse);
+  
+  // Gets notification delivery status.
+  rpc GetDeliveryStatus (GetDeliveryStatusRequest) returns (DeliveryStatusResponse);
+}
+
+// Send notification request.
+message SendNotificationRequest {
+  string token = 1;
+  string message = 2;
+  AndroidConfig androidConfig = 3;
+  ApnsConfig apnsConfig = 4;
+
+  // Android specific config.
+  message AndroidConfig {
+	string title = 1;
+	string condition = 2;
+  }
+
+  // iOS specific config.
+  message ApnsConfig {
+	uint32 priority = 3;
+	bool isBackground = 4;
+  }
+}
+
+// Get notification delivery status request.
+message GetDeliveryStatusRequest {
+	string id = 1;
+}
+
+// Send notification response.
+message SendNotificationResponse {
+	string id = 1;
+	DeliveryStatus status = 2;
+}
+
+// Delivery status response.
+message DeliveryStatusResponse {
+	DeliveryStatus status = 1;
+}
+
+// Delivery status.
+enum DeliveryStatus {
+	NotDelivered = 0;
+	Delivered = 1;
+}
